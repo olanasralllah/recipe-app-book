@@ -6,6 +6,11 @@ android {
     namespace 'com.example.recipebook'
     compileSdk 36
 
+
+    buildFeatures {
+        viewBinding = true
+    }
+
     defaultConfig {
         applicationId "com.example.recipebook"
         minSdk 24
