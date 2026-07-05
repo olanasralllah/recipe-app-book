@@ -26,7 +26,7 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/img_profile_icon"
+            android:id="@+id/profileIconImg"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_alignParentEnd="true"
@@ -37,7 +37,7 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/card_search"
+        android:id="@+id/searchCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/layout_header"
@@ -51,8 +51,8 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             app:iconifiedByDefault="false"
-            app:queryHint="ابحث عن وصفة بالاسم..."
-            android:contentDescription="حقل للبحث عن الوصفات المتاحة باسم الوصفة"
+            app:queryHint="Search for a recipe by name..."
+            android:contentDescription="A field to search for available recipes by recipe name"
             app:queryBackground="@android:color/transparent"
             app:searchIcon="@android:drawable/ic_menu_search" />
 
@@ -62,9 +62,9 @@
         android:id="@+id/tab_layout_categories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/card_search"
+        android:layout_below="@id/searchCard"
         app:tabMode="scrollable"
-        android:contentDescription="حقل للبحث عن الوصفات المتاحة باسم الوصفة"
+        android:contentDescription="A field to search for available recipes by recipe name"
         app:tabSelectedTextColor="@color/orange_primary"
         app:tabTextColor="@color/gray_text"
         app:tabIndicatorColor="@color/orange_primary"

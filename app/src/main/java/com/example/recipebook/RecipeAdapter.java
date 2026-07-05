@@ -1,5 +1,6 @@
 package com.example.recipebook;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,15 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), RecipeDetailsActivity.class);
+
+                intent.putExtra("recipe_title", recipe.getTitle());
+                intent.putExtra("recipe_category", recipe.getCategory());
+                intent.putExtra("recipe_ingredients", recipe.getIngredients());
+                intent.putExtra("recipe_steps", recipe.getSteps());
+                intent.putExtra("recipe_video_url", recipe.getVideoUrl());
+
+                v.getContext().startActivity(intent);
             }
         });
 
