@@ -67,7 +67,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="user@example.com"
-                        android:textColor="@color/gray_text"
+                        android:textColor="#666666"
                         android:textSize="14sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -92,9 +92,10 @@
                         android:gravity="center"
                         android:padding="16dp">
                         <TextView
+                            android:id="@+id/myRecipesCountTv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="12"
+                            android:text="0"
                             android:textColor="@color/orange_primary"
                             android:textSize="20sp"
                             android:textStyle="bold"/>
@@ -121,7 +122,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="45"
+                            android:text="0"
                             android:textColor="@color/orange_primary"
                             android:textSize="20sp"
                             android:textStyle="bold"/>
@@ -139,7 +140,7 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="12dp"
                 app:cardBackgroundColor="@color/white"
-                android:layout_marginBottom="30dp">
+                android:layout_marginBottom="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -174,6 +175,23 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Contributed Recipes"
+                android:textColor="#212121"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_gravity="start"
+                android:layout_marginBottom="10dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/myRecipesRv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:layout_marginBottom="20dp"/>
+
         </LinearLayout>
     </ScrollView>
 
@@ -190,5 +208,6 @@
         android:padding="10dp"
         android:clickable="true"
         android:focusable="true"
+        android:gravity="center"
         />
 </RelativeLayout>

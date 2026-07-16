@@ -89,7 +89,7 @@
             android:id="@+id/recipeStepsEt"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:hint="1. Boil water\n2. Add salt..."
+            android:hint="Boil water, Add salt, Put pasta"
             android:inputType="textMultiLine"
             android:gravity="top"
             android:background="@android:drawable/edit_text"

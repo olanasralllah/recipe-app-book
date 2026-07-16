@@ -1,20 +1,30 @@
 package com.example.recipebook;
 
 public class Recipe {
+    private String recipeId;
+    private String userId;
     private String title;
     private String category;
     private String ingredients;
     private String steps;
     private String videoUrl;
+
     public Recipe() {}
 
-    public Recipe(String title, String category, String ingredients, String steps, String videoUrl) {
+    public Recipe(String title, String category, String ingredients, String steps, String videoUrl, String userId) {
         this.title = title;
         this.category = category;
         this.ingredients = ingredients;
         this.steps = steps;
         this.videoUrl = videoUrl;
+        this.userId = userId;
     }
+
+    public String getRecipeId() { return recipeId; }
+    public void setRecipeId(String recipeId) { this.recipeId = recipeId; }
+
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
@@ -30,4 +40,5 @@ public class Recipe {
 
     public String getVideoUrl() { return videoUrl; }
     public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }
+
 }
