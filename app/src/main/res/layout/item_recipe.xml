@@ -14,12 +14,24 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
+        <ImageView
+            android:id="@+id/recipeImg"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="12dp"
+            android:scaleType="centerCrop"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:contentDescription="Recipe Image" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_toEndOf="@id/recipeImg"
             android:layout_toStartOf="@+id/actionsLayout"
-            android:layout_alignParentStart="true">
+            android:layout_centerVertical="true">
 
             <TextView
                 android:id="@+id/recipeTitleTv"

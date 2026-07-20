@@ -28,6 +28,34 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Recipe Image"
+            android:textColor="#333"
+            android:textStyle="bold"
+            android:layout_marginBottom="5dp"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/editSelectImgBtn"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="3dp"
+            android:layout_marginBottom="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/editRecipeImgPreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:contentDescription="Recipe Image Preview" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Recipe Title"
             android:textColor="#333"
             android:textStyle="bold"
@@ -111,6 +139,13 @@
             android:background="@android:drawable/edit_text"
             android:paddingHorizontal="15dp"
             android:layout_marginBottom="25dp"/>
+        <ProgressBar
+            android:id="@+id/editProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="15dp"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/updateRecipeBtn"

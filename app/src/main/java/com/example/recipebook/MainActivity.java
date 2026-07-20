@@ -19,6 +19,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -29,8 +30,10 @@ public class MainActivity extends AppCompatActivity {
      ActivityMainBinding binding;
      RecipeAdapter adapter;
      List<Recipe> recipeList;
-
     FirebaseFirestore firestore;
+    private String currentSearchQuery = "";
+    private ListenerRegistration recipesListenerRegistration;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         recipeList = new ArrayList<>();
         binding.rvRecipes.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RecipeAdapter(recipeList);
+        adapter = new RecipeAdapter(recipeList, false);
         binding.rvRecipes.setAdapter(adapter);
 
         getRecipesFromFirestore("All");
@@ -69,13 +72,24 @@ public class MainActivity extends AppCompatActivity {
         binding.searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                filterRecipesBySearch(query);
+                currentSearchQuery = query;
+                applyFilter();
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                filterRecipesBySearch(newText);
+                currentSearchQuery = newText;
+                applyFilter();
+                return false;
+            }
+        });
+
+        binding.searchView.setOnCloseListener(new androidx.appcompat.widget.SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                currentSearchQuery = "";
+                applyFilter();
                 return false;
             }
         });
@@ -83,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         binding.profileIconImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "Profile Clicked!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 startActivity(intent);
             }
@@ -98,13 +113,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getRecipesFromFirestore(String category) {
+
+        if (recipesListenerRegistration != null) {
+            recipesListenerRegistration.remove();
+        }
+
         Query query = firestore.collection("recipes");
 
         if (!category.equals("All")) {
             query = query.whereEqualTo("category", category);
         }
 
-        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        recipesListenerRegistration = query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
@@ -120,27 +140,35 @@ public class MainActivity extends AppCompatActivity {
                         String ingredients = doc.getString("ingredients");
                         String steps = doc.getString("steps");
                         String url = doc.getString("videoUrl");
-
                         String recipeId = doc.getString("recipeId");
                         String userId = doc.getString("userId");
+                        String imageUrl = doc.getString("imageUrl");
 
-                        Recipe recipe = new Recipe(title, cat, ingredients, steps, url, userId);
+                        Recipe recipe = new Recipe(title, cat, ingredients, steps, url, userId, imageUrl);
                         recipe.setRecipeId(recipeId);
 
                         recipeList.add(recipe);
                     }
-                    adapter.notifyDataSetChanged();
+                    applyFilter();
                 }
             }
         });
     }
-    private void filterRecipesBySearch(String text) {
-        List<Recipe> filteredList = new ArrayList<>();
-        for (Recipe recipe : recipeList) {
-            if (recipe.getTitle() != null && recipe.getTitle().toLowerCase().contains(text.toLowerCase())) {
-                filteredList.add(recipe);
-            }
+    private void applyFilter() {
+    List<Recipe> filteredList = new ArrayList<>();
+    for (Recipe recipe : recipeList) {
+        if (recipe.getTitle() != null && recipe.getTitle().toLowerCase().contains(currentSearchQuery.toLowerCase())) {
+            filteredList.add(recipe);
         }
-        adapter.updateList(filteredList);
+    }
+    adapter.updateList(filteredList);
+}
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (recipesListenerRegistration != null) {
+            recipesListenerRegistration.remove();
+        }
     }
 }

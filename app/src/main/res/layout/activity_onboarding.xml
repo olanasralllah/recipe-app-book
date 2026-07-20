@@ -15,7 +15,7 @@
         android:id="@+id/welcomeImg"
         android:layout_width="220dp"
         android:layout_height="220dp"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/recipe_logo"
         android:contentDescription="Welcome Image" />
 
     <TextView

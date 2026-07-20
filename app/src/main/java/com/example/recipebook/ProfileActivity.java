@@ -1,6 +1,8 @@
 package com.example.recipebook;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -23,6 +25,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +37,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     RecipeAdapter adapter;
     List<Recipe> myRecipesList;
+    private String profileImageUrl = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +50,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         myRecipesList = new ArrayList<>();
         binding.myRecipesRv.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new RecipeAdapter(myRecipesList);
+
+        adapter = new RecipeAdapter(myRecipesList, true);
         binding.myRecipesRv.setAdapter(adapter);
 
-        loadUserDataFromFirestore();
+        listenToUserDataChanges();
         loadMyRecipesFromFirestore();
 
         binding.logoutBtn.setOnClickListener(new View.OnClickListener() {
@@ -57,10 +62,12 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Toast.makeText(ProfileActivity.this, "Logging out...", Toast.LENGTH_SHORT).show();
 
+                SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+                sharedPreferences.edit().putBoolean("is_remembered", false).apply();
+
                 if (auth.getCurrentUser() != null) {
                     auth.signOut();
                 }
-
                 Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
@@ -74,35 +81,53 @@ public class ProfileActivity extends AppCompatActivity {
                 Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
                 intent.putExtra("user_name", binding.profileNameTv.getText().toString());
                 intent.putExtra("user_email", binding.profileEmailTv.getText().toString());
+                intent.putExtra("profile_image_url", profileImageUrl);
                 startActivity(intent);
+            }
+        });
+
+        binding.settingsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ProfileActivity.this, "Settings feature coming soon!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void loadUserDataFromFirestore() {
+    private void listenToUserDataChanges() {
         if (auth.getCurrentUser() != null) {
             String userID = auth.getCurrentUser().getUid();
 
-            firestore.collection("users").document(userID).get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            firestore.collection("users").document(userID)
+                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                         @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful() && task.getResult() != null) {
-                                DocumentSnapshot document = task.getResult();
-                                if (document.exists()) {
-                                    String name = document.getString("name");
-                                    String email = document.getString("email");
+                        public void onEvent(@Nullable DocumentSnapshot document, @Nullable FirebaseFirestoreException error) {
+                            if (error != null) {
+                                return;
+                            }
 
-                                    if (name != null) binding.profileNameTv.setText(name);
-                                    if (email != null) binding.profileEmailTv.setText(email);
+                            if (document != null && document.exists()) {
+                                String name = document.getString("name");
+                                String email = document.getString("email");
+                                String imageUrl = document.getString("profileImageUrl");
+
+                                if (name != null) binding.profileNameTv.setText(name);
+                                if (email != null) binding.profileEmailTv.setText(email);
+
+                                if (imageUrl != null && !imageUrl.isEmpty()) {
+                                    profileImageUrl = imageUrl;
+                                    Picasso.get()
+                                            .load(imageUrl)
+                                            .placeholder(android.R.drawable.ic_menu_gallery)
+                                            .error(android.R.drawable.ic_menu_gallery)
+                                            .into(binding.profileImg);
                                 }
-                            } else {
-                                Toast.makeText(ProfileActivity.this, "Failed to load profile data", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
         }
     }
+
 
     private void loadMyRecipesFromFirestore() {
         if (auth.getCurrentUser() != null) {
@@ -128,19 +153,18 @@ public class ProfileActivity extends AppCompatActivity {
                                     String url = doc.getString("videoUrl");
                                     String recipeId = doc.getString("recipeId");
                                     String userId = doc.getString("userId");
+                                    String imageUrl = doc.getString("imageUrl");
 
-                                    Recipe recipe = new Recipe(title, cat, ingredients, steps, url, userId);
+                                    Recipe recipe = new Recipe(title, cat, ingredients, steps, url, userId, imageUrl);
                                     recipe.setRecipeId(recipeId);
 
                                     myRecipesList.add(recipe);
                                 }
 
                                 adapter.notifyDataSetChanged();
-
-                                binding.myRecipesCountTv.setText(String.valueOf(myRecipesList.size()));
-                            }
+                                binding.myRecipesCountTv.setText(String.valueOf(myRecipesList.size()));                            }
                         }
                     });
         }
     }
-}
+    }

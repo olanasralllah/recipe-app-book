@@ -8,11 +8,45 @@
     android:layout_height="match_parent"
     tools:context=".ProfileActivity"
     android:background="#F9F9F9"
-    android:padding="20dp">
+    android:paddingHorizontal="20dp"
+    android:paddingBottom="20dp"
+    android:paddingTop="10dp">
 
-    <ScrollView
+    <RelativeLayout
+        android:id="@+id/layout_header"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="10dp">
+
+        <ImageView
+            android:id="@+id/backBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="4dp"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="#212121"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="My Profile"
+            android:textColor="#212121"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/layout_header"
         android:layout_above="@+id/logoutBtn"
         android:fillViewport="true">
 
@@ -20,7 +54,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:paddingBottom="40dp"
+            android:clipToPadding="false">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -28,8 +64,7 @@
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
                 app:cardBackgroundColor="@color/white"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="10dp">
+                android:layout_marginBottom="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -119,7 +154,9 @@
                         android:orientation="vertical"
                         android:gravity="center"
                         android:padding="16dp">
+
                         <TextView
+                            android:id="@+id/favoriteRecipesCountTv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0"
@@ -193,7 +230,7 @@
                 android:layout_marginBottom="20dp"/>
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <TextView
         android:id="@+id/logoutBtn"
@@ -208,6 +245,5 @@
         android:padding="10dp"
         android:clickable="true"
         android:focusable="true"
-        android:gravity="center"
-        />
+        android:gravity="center" />
 </RelativeLayout>

@@ -8,16 +8,18 @@ public class Recipe {
     private String ingredients;
     private String steps;
     private String videoUrl;
+    private String imageUrl;
 
     public Recipe() {}
 
-    public Recipe(String title, String category, String ingredients, String steps, String videoUrl, String userId) {
+    public Recipe(String title, String category, String ingredients, String steps, String videoUrl, String userId, String imageUrl) {
         this.title = title;
         this.category = category;
         this.ingredients = ingredients;
         this.steps = steps;
         this.videoUrl = videoUrl;
         this.userId = userId;
+        this.imageUrl = imageUrl;
     }
 
     public String getRecipeId() { return recipeId; }
@@ -40,5 +42,10 @@ public class Recipe {
 
     public String getVideoUrl() { return videoUrl; }
     public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+
 
 }
