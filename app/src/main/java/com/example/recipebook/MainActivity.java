@@ -14,7 +14,9 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.recipebook.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
      RecipeAdapter adapter;
      List<Recipe> recipeList;
     FirebaseFirestore firestore;
+    FirebaseAuth auth;
     private String currentSearchQuery = "";
     private ListenerRegistration recipesListenerRegistration;
 
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         firestore = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
 
         binding.tabLayoutCategories.addTab(binding.tabLayoutCategories.newTab().setText("All"));
         binding.tabLayoutCategories.addTab(binding.tabLayoutCategories.newTab().setText("Main Dishes"));
@@ -54,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         binding.rvRecipes.setAdapter(adapter);
 
         getRecipesFromFirestore("All");
+        loadUserProfileImage();
 
         binding.tabLayoutCategories.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -112,6 +117,35 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    private void loadUserProfileImage() {
+        if (auth.getCurrentUser() != null) {
+            String currentUserId = auth.getCurrentUser().getUid();
+            firestore.collection("users").document(currentUserId)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.exists()) {
+                                String imageUrl = documentSnapshot.getString("profileImageUrl");
+                                if (imageUrl != null && !imageUrl.isEmpty()) {
+                                    com.squareup.picasso.Picasso.get()
+                                            .load(imageUrl)
+                                            .placeholder(R.drawable.ic_launcher_foreground) // أي صورة افتراضية مؤقتة
+                                            .error(R.drawable.ic_launcher_foreground)
+                                            .into(binding.profileIconImg);
+                                }
+                            }
+                        }
+                    });
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadUserProfileImage();
+    }
     private void getRecipesFromFirestore(String category) {
 
         if (recipesListenerRegistration != null) {

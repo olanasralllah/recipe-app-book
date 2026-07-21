@@ -27,14 +27,25 @@
             android:textSize="26sp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/userProfileImg"
+
+        <androidx.cardview.widget.CardView
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="20dp"
-            android:src="@mipmap/ic_launcher_round"
-            android:contentDescription="User Profile Image" />
+            android:layout_centerHorizontal="true"
+            app:cardCornerRadius="50dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@android:color/transparent">
 
+            <ImageView
+                android:id="@+id/userProfileImg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher_round"
+                android:contentDescription="User Profile Image" />
+
+        </androidx.cardview.widget.CardView>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

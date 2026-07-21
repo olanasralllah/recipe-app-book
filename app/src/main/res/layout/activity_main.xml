@@ -26,18 +26,26 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/profileIconImg"
+        <androidx.cardview.widget.CardView
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:padding="4dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@mipmap/ic_launcher_round"
-            android:contentDescription="Profile Screen" />
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@android:color/transparent">
+
+            <ImageView
+                android:id="@+id/profileIconImg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:contentDescription="Profile Screen"
+                android:focusable="true"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher_round" />
+
+        </androidx.cardview.widget.CardView>
     </RelativeLayout>
 
     <androidx.cardview.widget.CardView

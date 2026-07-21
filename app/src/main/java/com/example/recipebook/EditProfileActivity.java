@@ -77,7 +77,11 @@ public class EditProfileActivity extends AppCompatActivity {
                 uri -> {
                     if (uri != null) {
                         selectedImageUri = uri;
-                        binding.editProfileImg.setImageURI(uri);
+                        Picasso.get()
+                                .load(uri)
+                                .placeholder(android.R.drawable.ic_menu_gallery)
+                                .error(android.R.drawable.ic_menu_gallery)
+                                .into(binding.editProfileImg);
                     }
                 }
         );

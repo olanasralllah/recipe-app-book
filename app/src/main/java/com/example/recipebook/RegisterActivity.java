@@ -93,6 +93,8 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
                 } else if (selectedCountry.equals("Select Country")) {
                     Toast.makeText(RegisterActivity.this, "Please select a country", Toast.LENGTH_SHORT).show();
+                } else if (selectedImageUri == null) {
+                    Toast.makeText(RegisterActivity.this, "Please click on the profile icon to choose an image!", Toast.LENGTH_LONG).show();
                 }else {
                     binding.registerBtn.setEnabled(false);
                     auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -101,11 +103,12 @@ public class RegisterActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 String userID = auth.getCurrentUser().getUid();
 
-                                if (selectedImageUri != null) {
-                                    uploadProfileImageAndSave(userID, name, email, selectedCountry);
-                                } else {
-                                    saveUserDataToFirestore(userID, name, email, selectedCountry, "");
-                                }
+                                uploadProfileImageAndSave(userID, name, email, selectedCountry);
+//                                if (selectedImageUri != null) {
+//                                    uploadProfileImageAndSave(userID, name, email, selectedCountry);
+//                                } else {
+//                                    saveUserDataToFirestore(userID, name, email, selectedCountry, "");
+//                                }
                             } else {
                                 binding.registerBtn.setEnabled(true);
                                 Toast.makeText(RegisterActivity.this, "Registration Failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
@@ -143,7 +146,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             RequestBody requestFile = RequestBody.create(MediaType.parse(mimeType), bytes);
             String folderName = "profiles";
-            String fileName = "profile_" + userID + ".png";
+            String fileName = "profile_" + userID + "_" + System.currentTimeMillis() + ".png";
 
             SupabaseService service = RetrofitClient.getService();
             Call<ResponseBody> call = service.uploadImage(
@@ -164,8 +167,13 @@ public class RegisterActivity extends AppCompatActivity {
                         saveUserDataToFirestore(userID, name, email, country, publicImageUrl);
                     } else {
                         binding.registerBtn.setEnabled(true);
-                        Toast.makeText(RegisterActivity.this, "Failed to upload image to Supabase", Toast.LENGTH_SHORT).show();
-                    }
+                        try {
+                            String errorBody = response.errorBody() != null ? response.errorBody().string() : "No error body";
+                            android.util.Log.e("SupabaseRegisterError", "Code: " + response.code() + " | Body: " + errorBody);
+                            Toast.makeText(RegisterActivity.this, "Upload Error (" + response.code() + "): " + errorBody, Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            Toast.makeText(RegisterActivity.this, "Failed to upload image to Supabase", Toast.LENGTH_SHORT).show();
+                        }                    }
                 }
 
                 @Override
